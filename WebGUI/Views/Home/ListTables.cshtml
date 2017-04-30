@@ -1,0 +1,57 @@
+﻿@model WebGUI.Models.Tables
+
+@{
+    ViewData["Title"] = "Tables";
+}
+
+<script type="text/javascript">
+    //function getDataTable(id) {
+    //    $(id).dataTable();
+    //};
+
+    document.write(id);
+    $(document).ready(function() {
+        $(id).dataTable();
+    });
+</script>
+
+
+<h2>List of Tables</h2>
+
+<div class="panel-group" id="accordion">
+    @foreach (var table in Model.MyTables) {
+        <div class="panel panel-default">
+            <div class="panel-heading" style="cursor: pointer" data-toggle="collapse" data-parent="#accordion" data-target="#@table.Item1">
+                <h4 class="panel-title">
+                    @table.Item1
+                </h4>
+            </div>
+            <div id="@table.Item1" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <table class="table" id="table-@table.Item1">
+                        <thead>
+                        <tr>
+                            @foreach (var header in table.Item2.Columns) {
+                                <th>@header.Name</th>
+                            }
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var row in table.Item2.Rows) {
+                            <tr>
+                                @foreach (var cell in row.Cells) {
+                                    <td>@cell</td>
+                                }
+                            </tr>
+                        }
+                        </tbody>
+
+                    </table>
+                    <script>
+                        getDataTable("#table-@table.Item1");
+                    </script>
+                </div>
+            </div>
+        </div>
+    }
+</div>

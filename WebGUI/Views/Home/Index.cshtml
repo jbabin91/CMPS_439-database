@@ -1,0 +1,75 @@
+﻿@model WebGUI.Models.Command
+
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div id="commands" hidden="hidden">
+            <p>
+                DataTypes can only be int, string, or bool. Bool character lengths have to be 5+. Where fields are not required.<br/>
+                You cannot use keywords as value fields (Create, Update, Delete, Insert, Union, Destroy, And, =) <br/><br/>
+                <b>Create:</b> Create Table tableName(ColumnName DataType CharLength Nullable, ~repeat~)<br/>
+                <b>Insert:</b> Insert Into tableName Values(column1Value, column2Value, ~repeat~)<br/>
+                <b>Print:</b> Print tableName<br/>
+                <b>Update: </b>Update tableName Set column = value, ~repeat~ where whereColumn = whereValue<br/>
+                <b>Delete:</b> Delete From tableName where column = value<br/>
+                <b>Select:</b> Select tableName where column = value<br/>
+                <b>Join:</b> Join table1Name, table2Name on column1 = column2<br/>
+                <b>Destroy:</b> Destroy tableName<br/><br/>
+
+                You can concatonate querys by seperating them with a ";"<br/>
+            </p>
+        </div>
+        <hr/>
+        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+        <div class="form-group">
+            @Html.LabelFor(model => model.Input, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                <textarea class="form-control" id="input" name="input"></textarea>
+                @Html.ValidationMessageFor(model => model.Input, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Save" class="btn btn-default" onclick="postQuery();"/>
+            </div>
+        </div>
+
+        <div>
+            <input type="button" value="Toggle Commands" class="btn btn-default" onclick="toggle();"/>
+        </div>
+    </div>
+
+    <div id="resultGrid"></div>
+}
+
+<script>
+    function postQuery() {
+        console.log($('#input').val);
+        $.ajax({
+            type: 'post',
+            url: '/Home/Command',
+            data: { query: $('#input').val() },
+            cache: false,
+            success: function(result) {
+                console.log(result);
+                $('#returnGrid').html(result);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+        console.log('finished');
+    }
+
+    function toggle() {
+        $('#commands').toggle();
+    }
+</script>

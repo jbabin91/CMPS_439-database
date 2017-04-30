@@ -1,0 +1,19 @@
+﻿@foreach (var table in Model.myTable) {
+    <h3>@table.Item1</h3>
+
+    <table class="table">
+        <tr>
+            @foreach (var header in table.Item2.Columns) {
+                <th>@header.Name</th>
+            }
+        </tr>
+
+        @foreach (var row in table.Item2.Rows) {
+            <tr>
+                @foreach (var cell in row.Cells) {
+                    <td>@cell</td>
+                }
+            </tr>
+        }
+    </table>
+}
