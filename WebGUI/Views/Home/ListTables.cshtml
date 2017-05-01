@@ -16,7 +16,8 @@
 </script>
 
 
-<h2>List of Tables</h2>
+<h2 style="text-align:center">List of Tables</h2>
+
 
 <div class="panel-group" id="accordion">
     @foreach (var table in Model.MyTables) {
@@ -25,7 +26,7 @@
                 <h4 class="panel-title">
                     @table.Item1
                 </h4>
-            </div>
+            </div> 
             <div id="@table.Item1" class="panel-collapse collapse">
                 <div class="panel-body">
                     <table class="table" id="table-@table.Item1">

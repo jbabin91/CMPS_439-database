@@ -5,11 +5,40 @@
     ViewData["Title"] = "Home Page";
 }
 
+<head>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
+  <div style=" box-shadow: 1px 1px 10px #888888;height:400px; width:350px; margin-left:350px"> 
+        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+        <div class="form-group">
+           @*Html.LabelFor(model => model.Input, new {@class = "control-label col-md-12"})*@
+            <div class="col-md-10">
+                <textarea style="height:200px; width:400px; margin-left:20px; margin-top:40px" class="form-control" id="input" name="input"></textarea>
+                @Html.ValidationMessageFor(model => model.Input, "", new {@class = "text-danger"})
+            </div>
+        </div>
+  
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input  style=" margin-top:50px; margin-left:75px;" type="button" value="+" class="btn btn-default w3-button w3-xlarge w3-circle w3-red w3-card-4" onclick="postQuery();"/>
+            </div>
+        </div>
+        </div>
+
+
+
+        
+
+        <div>
+            <button style="width:30%; margin-top:20px; text-align:center" class="w3-button w3-padding-large" type="button"  class="btn btn-default" onclick="toggle();"> Show Commands</button>
+        </div>
+          <div class="form-horizontal">
         <div id="commands" hidden="hidden">
+
             <p>
                 DataTypes can only be int, string, or bool. Bool character lengths have to be 5+. Where fields are not required.<br/>
                 You cannot use keywords as value fields (Create, Update, Delete, Insert, Union, Destroy, And, =) <br/><br/>
@@ -22,27 +51,8 @@
                 <b>Join:</b> Join table1Name, table2Name on column1 = column2<br/>
                 <b>Destroy:</b> Destroy tableName<br/><br/>
 
-                You can concatonate querys by seperating them with a ";"<br/>
+                You can concatonate querys by seperating them with a  Semi-Colon ";"<br/>
             </p>
-        </div>
-        <hr/>
-        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
-        <div class="form-group">
-            @Html.LabelFor(model => model.Input, new {@class = "control-label col-md-2"})
-            <div class="col-md-10">
-                <textarea class="form-control" id="input" name="input"></textarea>
-                @Html.ValidationMessageFor(model => model.Input, "", new {@class = "text-danger"})
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="button" value="Save" class="btn btn-default" onclick="postQuery();"/>
-            </div>
-        </div>
-
-        <div>
-            <input type="button" value="Toggle Commands" class="btn btn-default" onclick="toggle();"/>
         </div>
     </div>
 
