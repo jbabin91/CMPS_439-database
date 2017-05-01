@@ -17,7 +17,7 @@
         <div class="form-group">
            @*Html.LabelFor(model => model.Input, new {@class = "control-label col-md-12"})*@
             <div class="col-md-10">
-                <textarea style="height:200px; width:400px; margin-left:20px; margin-top:40px" class="form-control" id="input" name="input"></textarea>
+                <textarea style="height:200px; width:300px; margin-left:20px; margin-top:40px" class="form-control" id="input" name="input"></textarea>
                 @Html.ValidationMessageFor(model => model.Input, "", new {@class = "text-danger"})
             </div>
         </div>
@@ -42,7 +42,7 @@
             <p>
                 DataTypes can only be int, string, or bool. Bool character lengths have to be 5+. Where fields are not required.<br/>
                 You cannot use keywords as value fields (Create, Update, Delete, Insert, Union, Destroy, And, =) <br/><br/>
-                <b>Create:</b> Create Table tableName(ColumnName DataType CharLength Nullable, ~repeat~)<br/>
+                <b>Create:</b> Create tableName(ColumnName DataType CharLength Nullable, ~repeat~)<br/>
                 <b>Insert:</b> Insert Into tableName Values(column1Value, column2Value, ~repeat~)<br/>
                 <b>Print:</b> Print tableName<br/>
                 <b>Update: </b>Update tableName Set column = value, ~repeat~ where whereColumn = whereValue<br/>

@@ -7,21 +7,21 @@
     <div>
         <div>
             <p>
-                This query will create a table with the name "Game" with the following criteria.<br/>
+                This query will create a table with the name "Car" with the following criteria.<br/>
                 The format for creating table is CREATE tableName(columnName dataType lengthOfChars nullable, ~repeat~)<br/>
                 <b>Note:</b> the only data types are string, int, and bool<br/>
                 Booleans require a char length of 5<br/>
             </p>
             <div class="input-group">
                 <textarea class="form-control" disabled="disabled">
-                    CREATE Game(ID int 99 false, Name string 100 false, Rating int 2 true, Price int 2 false, InventoryCount int 3 false)
+                    CREATE Car(ID int 99 false, Name string 100 false, Rating int 2 true, Price int 2 false, InventoryCount int 3 false)
                 </textarea>
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="CreateGame();" id="CreateGameButton">Submit</button>
+                    <button class="btn btn-default" type="button" onclick="CreateCar();" id="CreateCarButton">Submit</button>
                 </span>
             </div><!-- /input-group -->
         </div><!-- /.col-lg-6 -->
-        <div id="CreateGameTableDiv">
+        <div id="CreateCarTableDiv">
 
         </div>
     </div>
@@ -29,7 +29,7 @@
 
     <div>
         <p>
-            This query will insert our first game into the Game table we created.<br/>
+            This query will insert our first Car into the Car table we created.<br/>
             The format for inserting is INSERT tableName VALUES(1 Value, 2 Value, ~repeat for all columns~)<br/>
             <b>Note:</b> The values have to coincide with what you specified or it won't work.<br/>
         </p>
@@ -37,32 +37,32 @@
             This Query will work
             <div class="input-group">
                 <textarea type="text" class="form-control" disabled="disabled">
-                    INSERT Game VALUES(1, League, , 99, 999);
-                    INSERT Game VALUES(2, Speed Runners, 99, 99, 23);
+                    INSERT Car VALUES(1, Ford, 99, 999);
+                    INSERT Car VALUES(2, Chevy, 99, 99, 23);
                 </textarea>
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="InsertFirstGame();" id="CreateGameButton">Submit</button>
+                    <button class="btn btn-default" type="button" onclick="InsertFirstCar();" id="CreateCarButton">Submit</button>
                 </span>
             </div><!-- /input-group -->
         </div><!-- /.col-lg-6 -->
 
-        <div id="InsertFirstGameTableDiv">
+        <div id="InsertFirstCarTableDiv">
 
         </div>
 
-        <div>
-            This Query will not work
+        <div >
+           <p> This Query will not work</p>
             <div class="input-group">
                 <textarea type="text" class="form-control" disabled="disabled">
-                    INSERT Game VALUES(LOL , what, hmm, idk, ran Out Of Things To Say) 
+                    INSERT Car VALUES(LOL , what, hmm, idk, la la land) 
                 </textarea>
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="InsertFirstWrongGame();" id="CreateGameButton">Submit</button>
+                    <button class="btn btn-default" type="button" onclick="InsertFirstWrongCar();" id="CreateCarButton">Submit</button>
                 </span>
             </div><!-- /input-group -->
         </div><!-- /.col-lg-6 -->
 
-        <div id="InsertFirstGameTableDivWrong">
+        <div id="InsertFirstCarTableDivWrong">
 
         </div>
     </div>
@@ -72,10 +72,10 @@
             Let's add another table with more columns and inserts to play with
             <div class="input-group">
                 <textarea type="text" class="form-control"disabled="disabled">
-                    CREATE Movie(ID int 99 false, Name string 99 true, Rating int 2 true, Good bool 5 true);
-                    INSERT Movie VALUES(1, Star Wars, 9, true);
-                    INSERT Movie VALUES(2, Star Treck, 7, true);
-                    INSERT Movie VALUES(3, Star Walk, 5, false) 
+                    CREATE Classes(ID int 99 false, Name string 99 true, Rating int 2 true, Good bool 5 true);
+                    INSERT Classes VALUES(1, CMPS, 482, true);
+                    INSERT Classes VALUES(2, CMPS, 431, true);
+                    INSERT Classes VALUES(3, CMPS, 439, false) 
                 </textarea>
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" onclick="LargeTableCreate();" id="lol">Submit</button>
@@ -94,7 +94,7 @@
             The syntax is Delete From *tableName* where *checkColumn* = *value*
             <div class="input-group">
                 <textarea type="text" class="form-control" disabled="disabled">
-                    DELETE FROM Movie WHERE ID = 1
+                    DELETE FROM Classes WHERE ID = 1
                 </textarea>
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" onclick="LargeTableDeleteRow();" id="lol">Submit</button>
@@ -111,7 +111,7 @@
             Join?
             <div class="input-group">
                 <textarea type="text" class="form-control" disabled="disabled">
-                    JOIN Game AND Movie WHERE ID = ID
+                    JOIN Car AND Classes WHERE ID = ID
                 </textarea>
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" onclick="LargeTableJoin();" id="lol">Submit</button>
@@ -128,7 +128,7 @@
             Let's update!
             <div class="input-group">
                 <textarea type="text" class="form-control" disabled="disabled">
-                    UPDATE Movie SET Name = Quick Walk WHERE Name = Star Walk
+                    UPDATE Classes SET Name = Quick Walk WHERE Name = Star Walk
                 </textarea>
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" onclick="LargeTableUpdate();" id="lol">Submit</button>
@@ -144,51 +144,51 @@
 
 
 <script>
-    function CreateGame() {
+    function CreateCar() {
         $.ajax({
             type: 'POST',
-            url: '/Home/CreateGameTut',
+            url: '/Home/CreateCarTut',
             data: {
                 query:
-                    "CREATE Game (ID int 99 false, Name string 100 false, Rating int 2 true, Price int 2 false, InventoryCount int 3 false)"
+                    "CREATE Car (ID int 99 false, Name string 100 false, Rating int 2 true, Price int 2 false, InventoryCount int 3 false)"
             },
             cache: false,
             success: function(result) {
                 console.log(result);
-                $('#CreateGameTableDiv').html(result);
+                $('#CreateCarTableDiv').html(result);
 
             }
         });
     }
 
-    function InsertFirstGame() {
+    function InsertFirstCar() {
         $.ajax({
             type: 'POST',
-            url: '/Home/CreateGameTut',
+            url: '/Home/CreateCarTut',
             data: {
                 query:
-                    "INSERT Game Values (1, League, 89, 99, 999); " +
-                        "Insert Game Values (2, Speed Runners, 99, 99, 23);"
+                    "INSERT Classes Values (1, CMPS 161, 89, 99, 999); " +
+                        "Insert Cars Values (2, Focus, 99, 99, 23);"
             },
             cache: false,
             success: function(result) {
                 console.log(result);
-                $('#InsertFirstGameTableDiv').html(result);
+                $('#InsertFirstCarTableDiv').html(result);
 
             }
         });
 
     }
 
-    function InsertFirstWrongGame() {
+    function InsertFirstWrongCar() {
         $.ajax({
             type: 'POST',
-            url: '/Home/CreateGameTut',
-            data: { query: "Insert Game Values (LOL , what, hmm, idk, ran Out Of Things To Say)" },
+            url: '/Home/CreateCarTut',
+            data: { query: "Insert Cars Values (LOL , what, hmm, idk, ran Out Of Things To Say)" },
             cache: false,
             success: function(result) {
                 console.log(result);
-                $('#InsertFirstGameTableDivWrong').html(result);
+                $('#InsertFirstCarTableDivWrong').html(result);
 
             }
         });
@@ -197,13 +197,13 @@
     function LargeTableCreate() {
         $.ajax({
             type: 'POST',
-            url: '/Home/CreateMovieTut',
+            url: '/Home/CreateClassesTut',
             data: {
                 query:
-                    "CREATE Movie(ID int 99 false, Name string 99 true, Rating int 2 true, Good bool 5 true);" +
-                        "Insert Movie Values(1, Star Wars, 9, true);"  +
-                        "Insert Movie Values(2, Star Treck, 7, true);" +
-                        "Insert Movie Values(3, Star Walk, 5, false)"
+                    "CREATE Classes (ID int 99 false, Name string 99 true, Class Number int 2 true, Good bool 5 true);" +
+                        "Insert Classes Values(1, CMPS, 120, true);"  +
+                        "Insert Classes Values(2, CMPS, ,401 true);" +
+                        "Insert Classes Values(3, CMPS, 390, false)"
             },
             cache: false,
             success: function(result) { 
@@ -216,8 +216,8 @@
     function LargeTableDeleteRow() {
         $.ajax({
             type: 'POST',
-            url: '/Home/CreateMovieTut',
-            data: { query: "DELETE FROM Movie WHERE ID = 1" },
+            url: '/Home/CreateClassesTut',
+            data: { query: "DELETE FROM Classes WHERE ID = 1" },
             cache: false,
             success: function(result) {
                 console.log(result);
@@ -230,7 +230,7 @@
         $.ajax({
             type: 'POST',
             url: '/Home/ReturTutInput',
-            data: { query: "JOIN Game, Movie ON ID = ID" },
+            data: { query: "JOIN Car, Classes ON ID = ID" },
             cache: false,
             success: function(result) {
                 console.log(result);
@@ -242,12 +242,24 @@
     function LargeTableUpdate() {
         $.ajax({
             type: 'POST',
-            url: '/Home/CreateMovieTut',
-            data: { query: "UPDATE Movie SET Name = Quick Walk WHERE Name = Star Walk" },
+            url: '/Home/CreateClassTut',
+            data: { query: "UPDATE Classes SET Name = CMPS 482 WHERE Name = Ford" },
             cache: false,
             success: function(result) {
                 console.log(result);
                 $('#LargeTableUpdate').html(result);
+            }
+        });
+    }
+        function LargeTableSelect() {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/CreateClassTut',
+            data: { query: "SELECT Classes SET Name = CMPS 161 WHERE Name = CMPS 411 " },
+            cache: false,
+            success: function(result) {
+                console.log(result);
+                $('#LargeTableSelect').html(result);
             }
         });
     }
