@@ -150,26 +150,44 @@ namespace Surly.Core {
             return new Tuple<string, Relation>(table.Item1, tempRelation);
         }
 
-        public Tuple<string, Relation> Select(string tableName, string column, string value) {
+        public Tuple<string, Relation> Select(string tableName, List<string> conditions) {
             var tempColumns = new List<ColumnAttributes>();
-            var tempColumnIndex = 0;
+            var conditionValue = new List<string>();
+            var tempColumnIndex = new List<int>();
             var table = Tables.FirstOrDefault(
                 x => x.Item1.ToLower().Equals(tableName.ToLower())
             );
-
+           
             foreach (var columns in table.Item2.Columns) {
                 tempColumns.Add(columns);
-                Debug.WriteLine("Testing select: " + columns.Name.ToUpper().Equals(column.ToUpper()));
-                if (columns.Name.ToUpper().Equals(column.ToUpper()))
-                    tempColumnIndex = table.Item2.Columns.IndexOf(columns);
+                foreach (var condition in conditions) {
+                    if (condition.Contains("||")) {
+                        var orCondition = condition.Split(new [] { "||", "=" }, StringSplitOptions.None);
+                        if (columns.Name.ToUpper().Equals(orCondition[0].Trim().ToUpper())) {
+                            tempColumnIndex.Add(table.Item2.Columns.IndexOf(columns));
+                        }
+                    }
+                    else { 
+                        var columnName = Regex.Split(condition, "=", RegexOptions.None);
+                        Debug.WriteLine("Columns Name Length: " + columns.Name.Length);
+                        Debug.WriteLine("Condition Name Length: " + columnName[0].Trim().Length);
+                        Debug.WriteLine("Testing select: " + columns.Name.ToUpper().Equals(columnName[0].Trim().ToUpper()));
+                        if (columns.Name.ToUpper().Equals(columnName[0].Trim().ToUpper()))
+                        tempColumnIndex.Add(table.Item2.Columns.IndexOf(columns));
+                    }
+                }
             }
             var tempRelation = new Relation(tempColumns);
 
-            var selectedRelation = table.Item2.Rows.Where(
-                x => x.Cells[tempColumnIndex].ToString().ToLower().Equals(value.ToLower())
-            );
-
-            foreach (var row in selectedRelation) tempRelation.Rows.Add(row);
+            foreach (var value in conditionValue) {
+                foreach (var columnIndex in tempColumnIndex) {
+                    var selectedRelation = table.Item2.Rows.Where(
+                        x => x.Cells[columnIndex].ToString().ToLower().Equals(value.ToLower())
+                    );
+                    foreach (var row in selectedRelation) tempRelation.Rows.Add(row);
+                }
+            }
+            
             return new Tuple<string, Relation>(table.Item1, tempRelation);
         }
 
@@ -529,8 +547,15 @@ namespace Surly.Core {
             var tableName = split[0].Trim();
 
             if (split.Length < 1) return null;
-                var whereClause = split[1].ToLower().Split(new[] { "=" }, StringSplitOptions.None);
-                if (whereClause.Length > 1) return Select(tableName, whereClause[0].Trim(), whereClause[1].Trim());
+     
+            var conditions = Regex.Split(split[1].ToLower(), "and", RegexOptions.IgnoreCase);
+            var whereClauses = new List<string>();
+
+            foreach (var condition in conditions) {
+                whereClauses.Add(condition);
+            }
+
+            if (whereClauses.Count > 1) return Select(tableName, whereClauses);
             return null;
         }
 
