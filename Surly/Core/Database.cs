@@ -32,12 +32,6 @@ namespace Surly.Core {
             Tables.AddLast(Tuple.Create(tableName, table));
         }
 
-        public void Destroy(string tableName) {
-            // Find Table and set it as destroyed
-            var destroyed = Tables.FirstOrDefault(x => x.Item1.ToLower().Equals(tableName.ToLower().Trim()));
-            if (destroyed != null) Tables.Remove(destroyed);
-        }
-
         public void Insert(string tableName, object[] item) {
             // Find Table and set it as table variable
             var table = Tables.FirstOrDefault(x => x.Item1.ToLower().Equals(tableName.ToLower()));
@@ -80,43 +74,10 @@ namespace Surly.Core {
             return table;
         }
 
-        public void Update(string tableName, string[] columnUpdate, string[] valueUpdate) {
-            var table = Tables.FirstOrDefault(x => x.Item1.ToLower().Equals(tableName.ToLower()));
-            var tempUpdateIndexes = new List<int>();
-
-            foreach (var column in table.Item2.Columns) // Loop through to get the index of each of the columns to update
-                foreach (var update in columnUpdate)
-                    if (column.Name.ToLower().Equals(update.ToLower()))
-                        tempUpdateIndexes.Add(table.Item2.Columns.IndexOf(column));
-
-            foreach (var row in table.Item2.Rows) // Put the values into the specified columns
-            foreach (var item in tempUpdateIndexes) row.Cells[item] = valueUpdate[tempUpdateIndexes.IndexOf(item)];
-        }
-
-        public void Update(string tableName, string[] columnUpdate, string[] valueUpdate, string whereColumn, string whereValue) {
-            var table = Tables.FirstOrDefault(
-                x => x.Item1.ToLower().Equals(tableName.ToLower())
-            );
-            var tempColumnIndexes = 0;
-            var tempUpdateIndexes = new List<int>();
-
-            foreach (var column in table.Item2.Columns) {
-                // Get the index of the where column
-                if (column.Name.ToLower().Equals(whereColumn.ToLower()))
-                    tempColumnIndexes = table.Item2.Columns.IndexOf(column);
-                // This get the index of the update column
-                foreach (var update in columnUpdate)
-                    if (column.Name.ToLower().Equals(update.ToLower()))
-                        tempUpdateIndexes.Add(table.Item2.Columns.IndexOf(column));
-            }
-
-            var whereFields = table.Item2.Rows.Where(
-                x => x.Cells[tempColumnIndexes].ToString().ToLower().Equals(whereValue.ToString().ToLower())
-            );
-
-            foreach (var row in whereFields)
-                foreach (var item in tempUpdateIndexes)
-                    row.Cells[item] = valueUpdate[tempUpdateIndexes.IndexOf(item)];
+        public void Destroy(string tableName) {
+            // Find Table and set it as destroyed
+            var destroyed = Tables.FirstOrDefault(x => x.Item1.ToLower().Equals(tableName.ToLower().Trim()));
+            if (destroyed != null) Tables.Remove(destroyed);
         }
 
         public void Delete(string tableName) {
@@ -150,26 +111,26 @@ namespace Surly.Core {
             var table = Tables.FirstOrDefault(
                 x => x.Item1.ToLower().Equals(tableName.ToLower())
             );
-            var columnName = column.Select(s => s.ToUpper()).ToArray();
+            var columnName = column.Select(s => s.Trim().ToUpper()).ToArray();
             var columnsz = new List<string>();
             foreach (var item in table.Item2.Columns) {
                 columnsz.Add(item.Name.ToUpper());
             }
 
             for (var i = 0; i < column.Count; i++) {
-                //var columns = table.Item2.Columns[i];
-                var columns = columnsz[i];
+                var columns = table.Item2.Columns[i];
+                //var columns = columnsz[i];
                 var columnz = columnName[i];
                 //var columnName = column[i];
                 Debug.WriteLine("Columns: " + columns);
                 Debug.WriteLine("Type: " + columns.GetType());
                 Debug.WriteLine("Columnz: " + columnz);
                 Debug.WriteLine("Type: " + columnz.GetType());
-                Debug.WriteLine(string.Equals(columns, columnz, StringComparison.Ordinal));
+                Debug.WriteLine(string.Equals(columns.Name.ToUpper(), columnz, StringComparison.Ordinal));
 
-                if (columns.ToUpper().Equals(column[tempColumnIndex].ToUpper()))
-                    //tempColumns.Add(columns);
-                tempColumnIndex++;
+                //if (columns.Name.ToUpper().Equals(column[tempColumnIndex].ToUpper()))
+                if (string.Equals(columns.Name.ToUpper(), columnz, StringComparison.Ordinal))
+                    tempColumns.Add(columns);
             }
 
             //foreach (var columns in table.Item2.Columns)
@@ -185,7 +146,7 @@ namespace Surly.Core {
             //    x => x.Cells[tempColumnIndex].ToString().ToLower().Equals(value.ToLower())
             //);
 
-            //foreach (var row in selectedRelation) tempRelation.Rows.Add(row);
+            foreach (var row in table.Item2.Rows) tempRelation.Rows.Add(row);
             return new Tuple<string, Relation>(table.Item1, tempRelation);
         }
 
@@ -252,6 +213,45 @@ namespace Surly.Core {
             return tempRelation;
         }
 
+        public void Update(string tableName, string[] columnUpdate, string[] valueUpdate) {
+            var table = Tables.FirstOrDefault(x => x.Item1.ToLower().Equals(tableName.ToLower()));
+            var tempUpdateIndexes = new List<int>();
+
+            foreach (var column in table.Item2.Columns) // Loop through to get the index of each of the columns to update
+            foreach (var update in columnUpdate)
+                if (column.Name.ToLower().Equals(update.ToLower()))
+                    tempUpdateIndexes.Add(table.Item2.Columns.IndexOf(column));
+
+            foreach (var row in table.Item2.Rows) // Put the values into the specified columns
+            foreach (var item in tempUpdateIndexes) row.Cells[item] = valueUpdate[tempUpdateIndexes.IndexOf(item)];
+        }
+
+        public void Update(string tableName, string[] columnUpdate, string[] valueUpdate, string whereColumn, string whereValue) {
+            var table = Tables.FirstOrDefault(
+                x => x.Item1.ToLower().Equals(tableName.ToLower())
+            );
+            var tempColumnIndexes = 0;
+            var tempUpdateIndexes = new List<int>();
+
+            foreach (var column in table.Item2.Columns) {
+                // Get the index of the where column
+                if (column.Name.ToLower().Equals(whereColumn.ToLower()))
+                    tempColumnIndexes = table.Item2.Columns.IndexOf(column);
+                // This get the index of the update column
+                foreach (var update in columnUpdate)
+                    if (column.Name.ToLower().Equals(update.ToLower()))
+                        tempUpdateIndexes.Add(table.Item2.Columns.IndexOf(column));
+            }
+
+            var whereFields = table.Item2.Rows.Where(
+                x => x.Cells[tempColumnIndexes].ToString().ToLower().Equals(whereValue.ToString().ToLower())
+            );
+
+            foreach (var row in whereFields)
+            foreach (var item in tempUpdateIndexes)
+                row.Cells[item] = valueUpdate[tempUpdateIndexes.IndexOf(item)];
+        }
+
         private static bool CheckType(string typeOfInput, string typeOfNeeded) {
             if (typeOfNeeded.ToLower().Equals("string")) return false;
             switch (typeOfInput) {
@@ -296,8 +296,8 @@ namespace Surly.Core {
 
                     while ((line = sw.ReadLine()) != null)
                         switch (line[0]) {
-                            case 'µ': {
-                                var split = line.Split(new[] { "µ" }, StringSplitOptions.RemoveEmptyEntries);
+                            case 'τ': {
+                                var split = line.Split(new[] { "τ" }, StringSplitOptions.RemoveEmptyEntries);
                                 tableName = split[0];
                                 columnNames = new List<string>();
                                 columnAttributes = new List<string>();
@@ -306,32 +306,32 @@ namespace Surly.Core {
                                 newTable = true;
                             }
                                 break;
-                            case '‰': {
-                                var split = line.Split(new[] { "‰", "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                            case 'α': {
+                                var split = line.Split(new[] { "α", "\t" }, StringSplitOptions.RemoveEmptyEntries);
                                 columnNames.AddRange(split);
                             }
                                 break;
-                            case 'ß': {
-                                var split = line.Split(new[] { "ß", "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                            case 'π': {
+                                var split = line.Split(new[] { "π", "\t" }, StringSplitOptions.RemoveEmptyEntries);
                                 columnAttributes.AddRange(split);
                             }
                                 break;
-                            case 'Σ': {
-                                var split = line.Split(new[] { "Σ", "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                            case 'Δ': {
+                                var split = line.Split(new[] { "Δ", "\t" }, StringSplitOptions.RemoveEmptyEntries);
                                 columnLength.AddRange(split.Select(length => Convert.ToInt32(length)));
                             }
                                 break;
-                            case 'Φ': {
-                                var split = line.Split(new[] { "Φ", "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                            case 'λ': {
+                                var split = line.Split(new[] { "λ", "\t" }, StringSplitOptions.RemoveEmptyEntries);
                                 nullable.AddRange(split.Select(Convert.ToBoolean));
                             }
                                 break;
-                            case 'φ': {
+                            case 'Θ': {
                                 if (newTable) {
                                     CreateTable(tableName, columnNames.ToArray(), columnAttributes.ToArray(), columnLength.ToArray(), nullable.ToArray());
                                     newTable = false;
                                 }
-                                var split = line.Split(new[] { "φ", "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                                var split = line.Split(new[] { "Θ", "\t" }, StringSplitOptions.RemoveEmptyEntries);
                                 var send = new object[split.Length];
                                 for (var i = 0; i < split.Length; i++) send[i] = TryCast(split[i]);
                                 Insert(tableName, send);
@@ -347,23 +347,23 @@ namespace Surly.Core {
             using (var fileStream = new FileStream(uri, FileMode.OpenOrCreate)) {
                 using (var file = new StreamWriter(fileStream)) {
                     foreach (var table in Tables) {
-                        file.WriteLine("µ" + table.Item1);
-                        file.Write("‰");
+                        file.WriteLine("τ" + table.Item1);
+                        file.Write("α");
 
                         foreach (var item in table.Item2.Columns) file.Write(item.Name + "\t");
 
                         file.WriteLine("");
-                        file.Write("ß");
+                        file.Write("π");
 
                         foreach (var data in table.Item2.Columns) file.Write(data.Type + "\t");
 
                         file.WriteLine("");
-                        file.Write("Σ");
+                        file.Write("Δ");
 
                         foreach (var data in table.Item2.Columns) file.Write(data.Length + "\t");
 
                         file.WriteLine("");
-                        file.Write("Φ");
+                        file.Write("λ");
 
                         foreach (var data in table.Item2.Columns) file.Write(data.Nullable + "\t");
 
@@ -372,10 +372,10 @@ namespace Surly.Core {
                         if (table.Item2.Rows.Count > 0)
                             foreach (var row in table.Item2.Rows) {
                                 for (var i = 0; i < table.Item2.Columns.Count; i++)
-                                    file.Write("φ" + row.Cells[i] + "\t");
+                                    file.Write("Θ" + row.Cells[i] + "\t");
                                 file.WriteLine("");
                             }
-                        else file.WriteLine("φ");
+                        else file.WriteLine("Θ");
                     }
                 }
             }
@@ -514,7 +514,7 @@ namespace Surly.Core {
 
             if (split.Length < 1) return null;
             var tableColumns = split[0].ToLower().Split(new[] { "," }, StringSplitOptions.None);
-            List<string> columnList = new List<string>();
+            var columnList = new List<string>();
             foreach (var column in tableColumns) {
                 columnList.Add(column);
             }
